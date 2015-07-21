@@ -5,7 +5,6 @@ package de.bagges.filter.shared;
  */
 public class Constants {
     public static final String HEADER_TEMPLATE = "%-20s%s\n";
-    public static final String SKIPPING_BODY = "Body skipped because of MediaType: application/octet-stream";
     public static final String DUMP_REQUEST_CONFIG = "dump.request";
     public static final String DUMP_RESPONSE_CONFIG = "dump.response";
 }

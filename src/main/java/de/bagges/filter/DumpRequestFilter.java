@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -45,16 +44,12 @@ public class DumpRequestFilter implements ContainerRequestFilter {
             builder.append("------------ HTTP REQUEST HEADER ------\n");
             containerRequestContext.getHeaders().forEach((k, v) -> builder.append(String.format(Constants.HEADER_TEMPLATE, k, v)));
             builder.append("------------ HTTP REQUEST BODY --------\n");
-            if (containerRequestContext.getMediaType() == null || !containerRequestContext.getMediaType().equals(MediaType.APPLICATION_OCTET_STREAM)) {
-                try (Scanner sc = new java.util.Scanner(containerRequestContext.getEntityStream()).useDelimiter("\\A")) {
-                    if (sc.hasNext()) {
-                        String body = sc.next();
-                        containerRequestContext.setEntityStream(new ByteArrayInputStream(body.getBytes()));
-                        builder.append(body);
-                    }
+            try (Scanner sc = new java.util.Scanner(containerRequestContext.getEntityStream()).useDelimiter("\\A")) {
+                if (sc.hasNext()) {
+                    String body = sc.next();
+                    containerRequestContext.setEntityStream(new ByteArrayInputStream(body.getBytes()));
+                    builder.append(body);
                 }
-            } else {
-                builder.append(Constants.SKIPPING_BODY);
             }
             LOG.info(builder.toString());
         }
